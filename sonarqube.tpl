@@ -29,7 +29,7 @@
       "type": "VULNERABILITY",
       "primaryLocation": {
         "message": "{{ .PkgName }} - {{ .VulnerabilityID }} - {{ .Title }}",
-        "filePath": "{{ $result.Target }}"
+        "filePath": "{{ $result.Target | replace " " "_" | replace ":" "_" | replace "(" "_" | replace ")" "_" }}"
       }
     }
 
