@@ -1,4 +1,4 @@
-def greet(name):
+def greet(name) -> str:
     """Function to greet a person with their name."""
     return f"Hello, {name}!"
 
