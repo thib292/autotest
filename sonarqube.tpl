@@ -1,26 +1,24 @@
 {{- $report := . -}}
 {
   "rules": [
-    {{- range $index, $vulnerability := .Vulnerabilities }}
     {
-      "id": "{{ $vulnerability.RuleID }}",
-      "name": "{{ $vulnerability.Package }}_{{ $vulnerability.VulnerabilityID }}",
-      "description": "{{ $vulnerability.Description }}",
+      "id": "trivy-vulnerability",
+      "name": "Vulnerability",
+      "description": "Detected by Trivy",
       "engineId": "trivy",
       "cleanCodeAttribute": "VULNERABLE",
       "impacts": [
         {
           "softwareQuality": "SECURITY",
-          "severity": "{{ $vulnerability.Severity | toUpper }}"
+          "severity": "HIGH"
         }
       ]
-    }{{ if lt (add $index 1) (len $report.Vulnerabilities) }},{{ end }}
-    {{- end }}
+    }
   ],
   "issues": [
     {{- range $index, $vulnerability := .Vulnerabilities }}
     {
-      "ruleId": "{{ $vulnerability.RuleID }}",
+      "ruleId": "trivy-vulnerability",
       "effortMinutes": 40,
       "primaryLocation": {
         "message": "{{ $vulnerability.Description }}",
@@ -29,7 +27,7 @@
           "startLine": 1
         }
       }
-    }{{ if lt (add $index 1) (len $report.Vulnerabilities) }},{{ end }}
+    }{{ if lt (add $index 1) (len .Vulnerabilities) }},{{ end }}
     {{- end }}
   ]
 }
