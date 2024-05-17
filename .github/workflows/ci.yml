@@ -24,9 +24,13 @@ jobs:
       - name: Run Trivy scan
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-            -v $HOME/Library/Caches:/root/.cache/ aquasec/trivy:latest \
-            image --format template --template "./sonarqube.tpl" \
-                -o trivy-report.json my-docker-image:latest
+            -v ${{ github.workspace }}/trivy-cache/:/root/.cache/ \
+            -v ${{ github.workspace }}/sonarqube.tpl:/input/sonarqube.tpl \
+            -v ${{ github.workspace }}/trivy-output:/output aquasec/trivy \
+            image --exit-code 1 --no-progress \
+            --format template --template "@/input/sonarqube.tpl" \
+            -o trivy-report.json \
+            my-docker-image:latest
 
       - name: Upload Trivy report
         uses: actions/upload-artifact@v2
