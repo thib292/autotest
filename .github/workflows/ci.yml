@@ -136,7 +136,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: trivy-report
-          path: trivy-report.json
+          path: .
       - name: Validate Trivy report
         run: |
           cat trivy-report.json
