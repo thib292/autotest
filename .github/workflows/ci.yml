@@ -101,14 +101,12 @@ jobs:
         with:
           image: aquasec/trivy:latest
           options: --rm --entrypoint ""
-          run: |
-            trivy image --format json -o trivy-report.json my-docker-image:latest
+          run: trivy image --format json -o trivy-report.json my-docker-image:latest
       - name: Upload security reports
         uses: actions/upload-artifact@v2
         with:
           name: bandit-report
           path: bandit-report.json
-        with:
           name: trivy-report
           path: trivy-report.json
 
