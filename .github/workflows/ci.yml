@@ -20,7 +20,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          . venv/bin/activate
+          . .venv/bin/activate
+          pre-commit
           pip install --upgrade pip
           pip install pylint
       - name: Run pylint
