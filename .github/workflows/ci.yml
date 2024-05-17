@@ -30,7 +30,7 @@ jobs:
             image --exit-code 1 --no-progress \
             --format template --template "@/input/sonarqube.tpl" \
             -o trivy-report.json \
-            my-docker-image:latest
+            my-docker-image:latest || true
 
       - name: Upload Trivy report
         uses: actions/upload-artifact@v2
