@@ -20,13 +20,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
+          . venv/bin/activate
           pip install --upgrade pip
           pip install pylint
       - name: Run pylint
         run: |
-          source venv/bin/activate
+          . venv/bin/activate
           pylint main.py --output-format=json > pylint-report.json
+      - name: Show pylint report
+        run: cat pylint-report.json
       - name: Upload pylint report
         uses: actions/upload-artifact@v2
         with:
@@ -44,12 +46,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
+          . venv/bin/activate
           pip install --upgrade pip
           pip install pytest pytest-cov
       - name: Run tests
         run: |
-          source venv/bin/activate
+          . venv/bin/activate
           pytest --cov=main --cov-report=xml:coverage.xml
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
@@ -71,12 +73,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
+          . venv/bin/activate
           pip install --upgrade pip
           pip install pytest selenium
       - name: Run Selenium tests
         run: |
-          source venv/bin/activate
+          . venv/bin/activate
           pytest test/e2e/test_selenium.py
 
   security:
@@ -90,12 +92,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          source venv/bin/activate
+          . venv/bin/activate
           pip install --upgrade pip
           pip install bandit
       - name: Run bandit
         run: |
-          source venv/bin/activate
+          . venv/bin/activate
           bandit -r . -f json -o bandit-report.json
       - name: Install Docker
         uses: addnab/docker-run-action@v3
