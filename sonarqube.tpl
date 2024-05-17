@@ -2,8 +2,8 @@
 {
   "rules": [
     {
-      "id": "trivy-vulnerability",
-      "name": "Vulnerability",
+      "id": "TRIVY_VULNERABILITY",
+      "name": "Trivy Vulnerability",
       "description": "Detected by Trivy",
       "engineId": "trivy",
       "cleanCodeAttribute": "VULNERABLE",
@@ -18,15 +18,16 @@
   "issues": [
     {{- range $index, $vulnerability := .Vulnerabilities }}
     {
-      "ruleId": "trivy-vulnerability",
+      "ruleId": "TRIVY_VULNERABILITY",
       "effortMinutes": 40,
       "primaryLocation": {
-        "message": "{{ $vulnerability.Description }}",
-        "filePath": "{{ $vulnerability.Target }}",
+        "message": "{{ $vulnerability.Description | js }}",
+        "filePath": "{{ $vulnerability.Target | js }}",
         "textRange": {
           "startLine": 1
         }
-      }
+      },
+      "severity": "{{ $vulnerability.Severity }}"
     }{{ if lt (add $index 1) (len .Vulnerabilities) }},{{ end }}
     {{- end }}
   ]
