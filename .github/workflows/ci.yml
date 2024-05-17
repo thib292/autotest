@@ -31,11 +31,11 @@ jobs:
             --format template --template "@/input/sonarqube.tpl" \
             -o /workspace/trivy-report.json \
             my-docker-image:latest || true
-            
+
       - name: Clean Trivy report
         run: |
-          sed -i 's/my-docker-image_latest__debian_12.5_/src\/Dockerfile/g' trivy-report.json
-          sed -i 's/Python/src\/requirements.txt/g' trivy-report.json
+          sed -i 's/my-docker-image_latest__debian_12.5_/Dockerfile/g' trivy-report.json
+          sed -i 's/Python/requirements.txt/g' trivy-report.json
 
       - name: List workspace directory
         run: ls -la ${{ github.workspace }}

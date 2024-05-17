@@ -1,0 +1,7 @@
+organization=thib292
+projectKey=thib292_autotest
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.54437
+dashboardUrl=https://sonarcloud.io/dashboard?id=thib292_autotest
+ceTaskId=AY-GZJkAa3OAUuyyTh9S
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AY-GZJkAa3OAUuyyTh9S
