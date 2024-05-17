@@ -109,17 +109,14 @@ jobs:
           path: trivy-report.json
 
   sonar:
+    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v3
         with:
-          distribution: 'adopt'
-          java-version: '11'
-      - name: Set up SonarQube Scanner
-        uses: sonarsource/sonarcloud-github-action@master
+          fetch-depth: 0  
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Run SonarQube Scanner
-        run: sonar-scanner -X
