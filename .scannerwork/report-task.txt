@@ -1,6 +1,7 @@
-projectKey=org.sonarqube:python-sonar-scanner
-serverUrl=http://localhost:9000
-serverVersion=10.5.1.90531
-dashboardUrl=http://localhost:9000/dashboard?id=org.sonarqube%3Apython-sonar-scanner
-ceTaskId=199a866c-cfc2-4e4c-810d-913f38131985
-ceTaskUrl=http://localhost:9000/api/ce/task?id=199a866c-cfc2-4e4c-810d-913f38131985
+organization=thib292
+projectKey=thib292_autotest
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.54437
+dashboardUrl=https://sonarcloud.io/dashboard?id=thib292_autotest
+ceTaskId=AY-F9qZkOt0nKqdh4prL
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AY-F9qZkOt0nKqdh4prL
