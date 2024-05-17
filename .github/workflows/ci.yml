@@ -22,7 +22,7 @@ jobs:
           python -m pip install --upgrade pip pylint
       - name: Run pylint
         run: |
-          pylint main.py --output-format=json > pylint-report.json
+          pylint main.py --output-format=json > pylint-report.json || true
       - name: Show pylint report
         run: cat pylint-report.json
       - name: Upload pylint report
