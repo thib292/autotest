@@ -1,0 +1,128 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install pylint
+      - name: Run pylint
+        run: |
+          source venv/bin/activate
+          pylint main.py --output-format=json > pylint-report.json
+      - name: Upload pylint report
+        uses: actions/upload-artifact@v2
+        with:
+          name: pylint-report
+          path: pylint-report.json
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install pytest pytest-cov
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest --cov=main --cov-report=xml:coverage.xml
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: selenium/standalone-chrome
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install pytest selenium
+      - name: Run Selenium tests
+        run: |
+          source venv/bin/activate
+          pytest test/e2e/test_selenium.py
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install bandit
+      - name: Run bandit
+        run: |
+          source venv/bin/activate
+          bandit -r . -f json -o bandit-report.json
+      - name: Install Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: aquasec/trivy:latest
+          options: --rm --entrypoint ""
+          run: |
+            trivy image --format json -o trivy-report.json my-docker-image:latest
+      - name: Upload security reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: bandit-report
+          path: bandit-report.json
+        with:
+          name: trivy-report
+          path: trivy-report.json
+
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+      - name: Set up SonarQube Scanner
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Run SonarQube Scanner
+        run: sonar-scanner

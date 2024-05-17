@@ -1,0 +1,7 @@
+************* Module main
+main.py:1: [C0114(missing-module-docstring), ] Missing module docstring
+main.py:2: [C0116(missing-function-docstring), hello_world] Missing function or method docstring
+
+------------------------------------------------------------------
+Your code has been rated at 5.00/10 (previous run: 5.00/10, +0.00)
+
