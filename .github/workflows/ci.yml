@@ -20,13 +20,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv venv
-          . .venv/bin/activate
-          pre-commit
+          . venv/bin/activate
           pip install --upgrade pip
           pip install pylint
       - name: Run pylint
         run: |
-          . venv/bin/activate
           pylint main.py --output-format=json > pylint-report.json
       - name: Show pylint report
         run: cat pylint-report.json
