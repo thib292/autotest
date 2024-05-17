@@ -32,11 +32,6 @@ jobs:
             -o /workspace/trivy-report.json \
             my-docker-image:latest || true
 
-      - name: Clean Trivy report
-        run: |
-          sed -i 's/my-docker-image_latest__debian_12.5_/Dockerfile/g' trivy-report.json
-          sed -i 's/Python/requirements.txt/g' trivy-report.json
-
       - name: List workspace directory
         run: ls -la ${{ github.workspace }}
 
@@ -86,6 +81,9 @@ jobs:
       - name: Run tests
         run: |
           pytest --cov=src --cov-report=xml:coverage.xml
+      - name: Clean coverage report
+        run: |
+          sed -i 's|C:/Users/33768/Downloads/autotest/src|src|g' coverage.xml
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -150,6 +148,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.externalIssuesReportPaths=trivy-report.json
+        
