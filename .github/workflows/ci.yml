@@ -44,7 +44,7 @@ jobs:
           python -m pip install --upgrade pip pytest pytest-cov
       - name: Run tests
         run: |
-          pytest --cov=main --cov-report=xml:coverage.xml
+          pytest --cov=src --cov-report=xml:coverage.xml
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
