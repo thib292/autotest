@@ -1,34 +1,39 @@
-{{- $report := . -}}
+{{- /* Template based on https://docs.sonarqube.org/latest/analysis/generic-issue/ */ -}}
 {
-  "rules": [
-    {
-      "id": "TRIVY_VULNERABILITY",
-      "name": "Trivy Vulnerability",
-      "description": "Detected by Trivy",
-      "engineId": "trivy",
-      "cleanCodeAttribute": "VULNERABLE",
-      "impacts": [
-        {
-          "softwareQuality": "SECURITY",
-          "severity": "HIGH"
-        }
-      ]
-    }
-  ],
   "issues": [
-    {{- range $index, $vulnerability := .Vulnerabilities }}
-    {
-      "ruleId": "TRIVY_VULNERABILITY",
-      "effortMinutes": 40,
-      "primaryLocation": {
-        "message": "{{ $vulnerability.Description | js }}",
-        "filePath": "{{ $vulnerability.Target | js }}",
-        "textRange": {
-          "startLine": 1
-        }
-      },
-      "severity": "{{ $vulnerability.Severity }}"
-    }{{ if lt (add $index 1) (len .Vulnerabilities) }},{{ end }}
+  {{- $t_first := true }}
+  {{- range $result := . }}
+    {{- $vulnerabilityType := .Type }}
+    {{- range .Vulnerabilities -}}
+    {{- if $t_first -}}
+      {{- $t_first = false -}}
+    {{ else -}}
+      ,
     {{- end }}
+    {
+      "engineId": "TRIVY",
+      "ruleId": "{{$vulnerabilityType}}",
+      "severity": {{ if eq .Severity "UNKNOWN" -}}
+                    "INFO"
+                  {{- else if eq .Severity "LOW" -}}
+                    "INFO"
+                  {{- else if eq .Severity "MEDIUM" -}}
+                    "MINOR"
+                  {{- else if eq .Severity "HIGH" -}}
+                    "MAJOR"
+                  {{- else if eq .Severity "CRITICAL" -}}
+                    "CRITICAL"
+                  {{-  else -}}
+                    "INFO"
+                  {{- end }},
+      "type": "VULNERABILITY",
+      "primaryLocation": {
+        "message": "{{ .PkgName }} - {{ .VulnerabilityID }} - {{ .Title }}",
+        "filePath": "{{ $result.Target }}"
+      }
+    }
+
+    {{- end -}}
+  {{- end }}
   ]
 }
