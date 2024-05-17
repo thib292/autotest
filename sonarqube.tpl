@@ -1,39 +1,35 @@
-{{- /* Template based on https://docs.sonarqube.org/latest/analysis/generic-issue/ */ -}}
+{{- $report := . -}}
 {
-  "issues": [
-  {{- $t_first := true }}
-  {{- range $result := . }}
-    {{- $vulnerabilityType := .Type }}
-    {{- range .Vulnerabilities -}}
-    {{- if $t_first -}}
-      {{- $t_first = false -}}
-    {{ else -}}
-      ,
-    {{- end }}
+  "rules": [
+    {{- range $index, $vulnerability := .Vulnerabilities }}
     {
-      "engineId": "TRIVY",
-      "ruleId": "{{$vulnerabilityType}}",
-      "severity": {{ if eq .Severity "UNKNOWN" -}}
-                    "INFO"
-                  {{- else if eq .Severity "LOW" -}}
-                    "INFO"
-                  {{- else if eq .Severity "MEDIUM" -}}
-                    "MINOR"
-                  {{- else if eq .Severity "HIGH" -}}
-                    "MAJOR"
-                  {{- else if eq .Severity "CRITICAL" -}}
-                    "CRITICAL"
-                  {{-  else -}}
-                    "INFO"
-                  {{- end }},
-      "type": "VULNERABILITY",
+      "id": "{{ $vulnerability.RuleID }}",
+      "name": "{{ $vulnerability.Package }}_{{ $vulnerability.VulnerabilityID }}",
+      "description": "{{ $vulnerability.Description }}",
+      "engineId": "trivy",
+      "cleanCodeAttribute": "VULNERABLE",
+      "impacts": [
+        {
+          "softwareQuality": "SECURITY",
+          "severity": "{{ $vulnerability.Severity | toUpper }}"
+        }
+      ]
+    }{{ if lt (add $index 1) (len $report.Vulnerabilities) }},{{ end }}
+    {{- end }}
+  ],
+  "issues": [
+    {{- range $index, $vulnerability := .Vulnerabilities }}
+    {
+      "ruleId": "{{ $vulnerability.RuleID }}",
+      "effortMinutes": 40,
       "primaryLocation": {
-        "message": "{{ .PkgName }} - {{ .VulnerabilityID }} - {{ .Title }}",
-        "filePath": "{{ $result.Target | replace " " "_" | replace ":" "_" | replace "(" "_" | replace ")" "_" }}"
+        "message": "{{ $vulnerability.Description }}",
+        "filePath": "{{ $vulnerability.Target }}",
+        "textRange": {
+          "startLine": 1
+        }
       }
-    }
-
-    {{- end -}}
-  {{- end }}
+    }{{ if lt (add $index 1) (len $report.Vulnerabilities) }},{{ end }}
+    {{- end }}
   ]
 }
