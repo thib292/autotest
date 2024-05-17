@@ -10,28 +10,29 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install pylint
-      - name: Run pylint
-        run: |
-          source venv/bin/activate
-          pylint main.py --output-format=json > pylint-report.json
-      - name: Upload pylint report
-        uses: actions/upload-artifact@v2
-        with:
-          name: pylint-report
-          path: pylint-report.json
+  stage: lint
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install pylint
+    - name: Run pylint
+      run: |
+        source venv/bin/activate
+        pylint main.py --output-format=json > pylint-report.json
+    - name: Upload pylint report
+      uses: actions/upload-artifact@v2
+      with:
+        name: pylint-report
+        path: pylint-report.json
 
   test:
     runs-on: ubuntu-latest
@@ -58,25 +59,26 @@ jobs:
           path: coverage.xml
 
   e2e:
-    runs-on: ubuntu-latest
-    container:
-      image: selenium/standalone-chrome
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install pytest selenium
-      - name: Run Selenium tests
-        run: |
-          source venv/bin/activate
-          pytest test/e2e/test_selenium.py
+  runs-on: ubuntu-latest
+  container:
+    image: selenium/standalone-chrome
+    options: --shm-size 2g  
+  steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install pytest selenium
+    - name: Run Selenium tests
+      run: |
+        source venv/bin/activate
+        pytest test/e2e/test_selenium.py
 
   security:
     runs-on: ubuntu-latest
